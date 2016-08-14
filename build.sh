@@ -6,7 +6,7 @@ NGINX_SHA256=1fd35846566485e03c0e318989561c135c598323ff349c503a6c14826487a801
 
 BASE=$PWD
 SRC=$PWD/src
-OUT=$PWD/nginx-build
+OUT=$PWD/out
 ROOTFS=$PWD/rootfs
 
 mkdir -p $SRC
@@ -24,8 +24,8 @@ NGX_BROTLI_STATIC_MODULE_ONLY=1 \
    --with-http_gzip_static_module \
    --with-stream \
    --with-http_v2_module \
-   --with-cc-opt="-I$BASE/libressl-build/include" \
-   --with-ld-opt="-L$BASE/libressl-build/lib -static -lm -lssl -lcrypto"
+   --with-cc-opt="-I$BASE/libressl/include" \
+   --with-ld-opt="-L$BASE/libressl/lib -static -lm -lssl -lcrypto"
 make
 
 mkdir -p $OUT $ROOTFS/bin $ROOTFS/www $ROOTFS/usr/local/nginx/logs
@@ -34,6 +34,15 @@ cp -r $SRC/etc $ROOTFS
 
 cp $SRC/objs/nginx $ROOTFS/bin
 
+cat <<EOF > $ROOTFS/etc/passwd
+root:x:0:0:root:/:/dev/null
+nobody:x:65534:65534:nogroup:/:/dev/null
+EOF
+
+cat <<EOF > $ROOTFS/etc/group
+root:x:0:
+nogroup:x:65534:
+EOF
 
 cd $ROOTFS
 tar -cf $OUT/rootfs.tar .

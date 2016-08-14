@@ -1,20 +1,17 @@
 ---
 platform: linux
-
 image_resource:
   type: docker-image
   source:
     repository: quay.io/cohesiveio/alpine-build
 
+run:
+  path: src/build.sh
+    
 inputs:
-  - name: nginx-src
-    path: src
-  - name: libressl-build
-  # - name: libbrotli-build
+  - name: src
+  - name: libressl
+  # - name: libbrotli
 
 outputs:
-  - name: nginx-build
-  
-run:
-  path: ./src/build.sh
-
+  - name: out
